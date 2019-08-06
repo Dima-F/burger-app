@@ -3,9 +3,9 @@ import styles from './Burger.module.css';
 import BurgerIngradient from './BurgerIngradient/BurgerIngradient';
 
 const burger = (props) => {
-    let transformedIngradients = Object.keys(props.ingradients)
+    let transformedIngradients = Object.keys(props.ingredients)
         .map(igKey => {
-            return [...Array(props.ingradients[igKey])].map((_,i)=><BurgerIngradient key={igKey + i} type={igKey} />
+            return [...Array(props.ingredients[igKey])].map((_,i)=><BurgerIngradient key={igKey + i} type={igKey} />
             );
         })
         .reduce((arr, el) => {
