@@ -17,12 +17,7 @@ const INGREDIENT_PRICES = {
 
 export class BurgerBuilder extends Component {
     state = {
-         ingredients: {
-             salad: 0,
-             bacon: 0,
-             cheese: 0,
-             meat: 0
-         },
+         ingredients: null,
          totalPrice: 4,
          purchasable: false,
          purchasing: false,
@@ -30,7 +25,7 @@ export class BurgerBuilder extends Component {
          error: false
     }
     componentDidMount() {
-        axios.get('https://burger-aafc2.firebaseio.com/ingredients')
+        axios.get('/ingredients.json')
             .then(res => {
                 this.setState({
                     ingredients: res.data
@@ -39,7 +34,6 @@ export class BurgerBuilder extends Component {
             .catch(e => this.setState({
                 error: true
             }));
-
     }
     purchaseCancelHandler = () => {
         this.setState({ purchasing: false });
@@ -143,6 +137,7 @@ export class BurgerBuilder extends Component {
                     />
                 </Aux>
             );
+
             orderSummary = (
                 <OrderSummary
                     ingredients={this.state.ingredients}
@@ -152,9 +147,9 @@ export class BurgerBuilder extends Component {
                 />
             );
         }
-
+        
         if(this.state.loading) {
-            orderSummary = <Spinner/>
+            orderSummary = <Spinner/>;
         }
         return (
             <Aux>
