@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './Burger.module.css';
 import BurgerIngradient from './BurgerIngradient/BurgerIngradient';
+import { withRouter } from 'react-router-dom';
 
 const burger = (props) => {
     let transformedIngradients = Object.keys(props.ingredients)
@@ -23,4 +24,4 @@ const burger = (props) => {
     );
 };
 
-export default burger;
+export default withRouter(burger);
