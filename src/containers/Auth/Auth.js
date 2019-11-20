@@ -4,6 +4,7 @@ import Button from '../../components/UI/Button/Button';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import { connect } from 'react-redux';
 import styles from './Auth.module.css';
+import { Redirect } from 'react-router-dom';
 import * as actions from '../../store/actions/index';
 
 export class Auth extends Component {
@@ -40,12 +41,19 @@ export class Auth extends Component {
         },
         isSignup: true
     }
+
+    componentDidMount() {
+        if(!this.props.buildingBurger && this.props.authRedirectPath !== '/') {
+            this.props.setAuthRedirectPath('/');
+        }
+    }
+
     switchAuthModeHandler = () => {
         this.setState(prevState => {
             return {
                 isSignup: !prevState.isSignup
             }
-        })
+        });
     }
 
     checkValidity(value, rules) {
@@ -93,10 +101,14 @@ export class Auth extends Component {
             controls: updatedControls
         });
     }
-    submitHandler = (event) => {
-        event.preventDefault();
+
+    auth = () => {
         const { email, password } = this.state.controls;
         this.props.auth(email.value, password.value, this.state.isSignup);
+    }
+
+    submitHandler = (e) => {
+        e.preventDefault();
     }
 
     render() {
@@ -121,7 +133,7 @@ export class Auth extends Component {
                         touched={el.control.touched}
                     />
                 ))}
-                <Button btnType="Success">SUBMIT</Button>
+                <Button btnType="Success" clicked={this.auth}>SUBMIT</Button>
                 <Button
                     clicked={this.switchAuthModeHandler}
                     btnType="Danger">SWITCH TO {this.state.isSignup ? 'SIGNIN' : 'SIGNUP' }
@@ -137,8 +149,13 @@ export class Auth extends Component {
                 <p>{this.props.error.message}</p>
             )
         }
+        let authRedirect = null;
+        if(this.props.isAuthenticated) {
+            authRedirect = <Redirect  to={this.props.authRedirectPath}/>
+        }
         return (
             <div className={styles.Auth}>
+                {authRedirect}
                 {errorMessage}
                 {form}
             </div>
@@ -148,8 +165,14 @@ export class Auth extends Component {
 const mapStateToProps = state => {
     return {
         loading: state.auth.loading,
-        error: state.auth.error
+        error: state.auth.error,
+        isAuthenticated: state.auth.token !== null,
+        buildingBurger: state.burgerBuilder.building,
+        authRedirectPath: state.auth.authRedirectPath
     };
 }
 
-export default connect(mapStateToProps, { auth: actions.auth })(Auth);
+export default connect(mapStateToProps, {
+    auth: actions.auth,
+    onSetAuthRedirectPath: actions.setAuthRedirectPath
+})(Auth);
