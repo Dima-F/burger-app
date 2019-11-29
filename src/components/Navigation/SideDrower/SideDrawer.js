@@ -19,7 +19,7 @@ export default function SideDrawer(props) {
     return (
         <Aux>
             <Backdrop show={props.open} clicked={props.closed}/>
-            <div className={attachecClasses.join(' ')}>
+            <div className={attachecClasses.join(' ')} onClick={props.closed}>
                 <div className={styles.Logo}>
                     <Logo/>
                 </div>
